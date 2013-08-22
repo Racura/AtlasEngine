@@ -17,11 +17,21 @@ namespace AtlasEngine
 {
     public class AtlasGlobal
     {
-        private AtlasTimer timer;
+        private AtlasTimer _timer;
 
+        private object _stateControl;
+
+        public void SetStateController(object stateControl)
+        {
+            if (_stateControl == null)
+                _stateControl = stateControl;
+        }
+
+        public T GetStateController<T>() where T : class { return _stateControl as T; }
+        
         public T GetManager<T>() where T : AtlasManager { return managerComponent.Manager[typeof(T).AssemblyQualifiedName] as T; }
-        public float Elapsed { get { return timer.GetElapsedUpdate(); } }
-        public float TotalTime { get { return timer.GetTotalUpdate(); } }
+        public float Elapsed { get { return _timer.GetElapsedUpdate(); } }
+        public float TotalTime { get { return _timer.GetTotalUpdate(); } }
 
         private Game game;
         public Game Game { get { return game; } }
@@ -55,7 +65,7 @@ namespace AtlasEngine
 
             game.IsFixedTimeStep = false;
 
-            timer = new AtlasTimer();
+            _timer = new AtlasTimer();
             graphics = new AtlasGraphics(this, graphicsManager);
             content = new AtlasContent(this);
             input = new AtlasInput();
@@ -64,14 +74,14 @@ namespace AtlasEngine
 
         internal void Update(GameTime gameTime)
         {
-            timer.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            _timer.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             input.Update();
             graphics.Update();
         }
 
         internal void Draw(GameTime gameTime)
         {
-            timer.Draw((float)gameTime.ElapsedGameTime.TotalSeconds);
+            _timer.Draw((float)gameTime.ElapsedGameTime.TotalSeconds);
             graphics.Draw();
         }
 
