@@ -10,11 +10,11 @@ namespace AtlasEngine
 {
     public class AtlasColorSystem
     {
-        public static Color GetColorFromHue(float hue, float brightness)
+        public static Color GetColorFromHue(float hue, float brightness, float saturation)
         {
-            return new Color(GetValueFromHue(hue) * brightness,
-                            GetValueFromHue(hue + 120) * brightness,
-                            GetValueFromHue(hue + 240) * brightness);
+            return new Color(GetValueFromHue(hue) * saturation      + brightness,
+                            GetValueFromHue(hue + 120) * saturation + brightness,
+                            GetValueFromHue(hue + 240) * saturation + brightness);
         }
 
         public static Color GetColorFromHue(float hue)

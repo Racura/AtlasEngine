@@ -88,6 +88,7 @@ namespace AtlasEngine
             }
 #endif
 #if XNA
+
             foreach(var t in touches){
 
                 if (t.Id == -1)
@@ -98,17 +99,18 @@ namespace AtlasEngine
                         t.Update(
                             new TouchLocation(new Vector2(mouse.X, mouse.Y), TouchLocationState.Invalid)
                         );
+                        t.SetOwner(null);
                     }
                     else if (mouse.LeftButton == ButtonState.Pressed && lastMouse.LeftButton == ButtonState.Released)
                     {
                         t.Update(
-                            new TouchLocation(new Vector2(mouse.X, mouse.Y), TouchLocationState.Released)
+                            new TouchLocation(new Vector2(mouse.X, mouse.Y), TouchLocationState.Pressed)
                         );
                     }
                     else if (mouse.LeftButton == ButtonState.Released)
                     {
                         t.Update(
-                            new TouchLocation(new Vector2(mouse.X, mouse.Y), TouchLocationState.Pressed)
+                            new TouchLocation(new Vector2(mouse.X, mouse.Y), TouchLocationState.Released)
                         );
                     }
                     else

@@ -82,14 +82,14 @@ namespace AtlasEngine
             }
         }
 
-        public T GetContent<T>(string location) where T : GraphicsResource
+        public T GetContent<T>(string location) where T : class
         {
             if (assets.ContainsKey(location) )
                 return assets[location] as T;
             return GetNull<T>() as T;
         }
 
-        public object GetNull<T>() where T : GraphicsResource
+        public object GetNull<T>() where T : class
         {
             string name = typeof(T).Name + EMPTY_CONTENT;
 

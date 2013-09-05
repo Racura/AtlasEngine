@@ -51,6 +51,11 @@ namespace AtlasEngine
 
         private Random rand;
         public float Rand { get { return (float)rand.NextDouble(); } }
+        public bool Debug
+        {
+            get;
+            set;
+        }
 
 
         public AtlasGlobal(AtlasComponent managerComponent, GraphicsDeviceManager graphicsManager)
@@ -70,6 +75,8 @@ namespace AtlasEngine
             content = new AtlasContent(this);
             input = new AtlasInput();
             rand = new Random();
+
+            Debug = false;
         }
 
         internal void Update(GameTime gameTime)
@@ -77,6 +84,12 @@ namespace AtlasEngine
             _timer.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             input.Update();
             graphics.Update();
+
+           
+#if DEBUG
+            if (input.IsKeyJustPressed(Keys.F1))
+                Debug = !Debug;
+#endif
         }
 
         internal void Draw(GameTime gameTime)

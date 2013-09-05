@@ -301,11 +301,30 @@ namespace AtlasEngine
                 Flush();
 
             SetGraphicsMode(AtlasGraphicsMode.Sprite);
+
+            if (texture == null)
+                return;
+
             drawCalls++;
 
             _spriteBatch.Draw(texture, position, source, color,
                     angle, orgin, scale,
                     spriteEffects ^ (_matrixHandler == null ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+
+#if DEBUG
+            d_sprite_draws++;
+#endif
+        }
+
+
+        public void DrawString(SpriteFont font, string text, Vector2 position, Color color, float angle, Vector2 origin, float scale)
+        {
+            DrawSprite(null, Vector2.Zero, Color.White);
+
+            drawCalls++;
+
+            _spriteBatch.DrawString(font, text, position, color,
+                angle, origin, scale, (_matrixHandler == null ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
 
 #if DEBUG
             d_sprite_draws++;
@@ -411,12 +430,12 @@ namespace AtlasEngine
             }
         }
 
-        private void DrawVector(VertexPositionColorTexture[] vertex, int primitiveCount)
+        public void DrawVector(VertexPositionColorTexture[] vertex, int primitiveCount)
         {
             DrawVector(vertex, null, primitiveCount);
         }
 
-        private void DrawVector(VertexPositionColorTexture[] vertex, Texture2D texture, int primitiveCount)
+        public void DrawVector(VertexPositionColorTexture[] vertex, Texture2D texture, int primitiveCount)
         {
             BeginVector();
 
