@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace AtlasEngine
 {
-    public struct RectangleF
+    public struct RectangleF : IEquatable<RectangleF>
     {
         public float    X,
                         Y,
@@ -20,6 +20,12 @@ namespace AtlasEngine
                 return new Vector2(X + Width / 2, Y + Height / 2);
             }
         }
+
+
+        public Rectangle Bounds { get { return new Rectangle(0,0,(int)Width, (int)Height); } }
+
+        public Vector2 Position { get { return new Vector2(X, Y); } }
+
 
         public RectangleF(float width, float height)
         {
@@ -73,6 +79,19 @@ namespace AtlasEngine
                 || (v.X > rect1.X + rect1.Width)
                 || (rect1.Y > v.Y)
                 || (v.Y > rect1.Y + rect1.Height));
+        }
+
+        public bool Equals(RectangleF other)
+        {
+            return X == other.X
+                && Y == other.Y
+                && Width == other.Width
+                && Height == other.Height;
+        }
+
+        public RectangleF Move(Vector2 position)
+        {
+            return new RectangleF(X + position.X, Y + position.Y, Width, Height);
         }
     }
 }

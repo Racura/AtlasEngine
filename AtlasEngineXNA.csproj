@@ -75,11 +75,9 @@
     <Compile Include="BasicManagers\Particle\ParticleDelegate.cs" />
     <Compile Include="BasicManagers\Particle\ParticleDelegates\SmokeParticleDelegate.cs" />
     <Compile Include="BasicManagers\Particle\ParticleDelegates\TrailParticleDelegate.cs" />
-    <Compile Include="BasicManagers\UIManager.cs" />
-    <Compile Include="BasicManagers\UI\UIButton.cs" />
-    <Compile Include="BasicManagers\UI\UIEntity.cs" />
-    <Compile Include="BasicManagers\UI\UIGroup.cs" />
-    <Compile Include="BasicManagers\UI\UIImage.cs" />
+    <Compile Include="UI\UILabel.cs" />
+    <Compile Include="UI\UIManager.cs" />
+    <Compile Include="UI\UIView.cs" />
     <Compile Include="Infrastructure\AtlasComponent.cs" />
     <Compile Include="Infrastructure\AtlasGame.cs" />
     <Compile Include="Infrastructure\AtlasManagerSorter.cs" />

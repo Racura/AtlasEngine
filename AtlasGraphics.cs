@@ -196,7 +196,7 @@ namespace AtlasEngine
             if (matrixHandler == null)
                 _graphicsDevice.Viewport = _viewPort;
             else
-                _graphicsDevice.Viewport = _matrixHandler.GetViewPort();
+                _graphicsDevice.Viewport = _matrixHandler.ViewPort;
         }
 
 
@@ -238,7 +238,7 @@ namespace AtlasEngine
                                 blendState,
                                 samplerState,
                                 DepthStencilState.None,
-                                _matrixHandler.GetSpriteBatchRasterState(),
+                                _matrixHandler.RasterState,
                                 null, _matrixHandler.GetSpriteBatchMatrix());
             }
 #if DEBUG
@@ -309,7 +309,7 @@ namespace AtlasEngine
 
             _spriteBatch.Draw(texture, position, source, color,
                     angle, orgin, scale,
-                    spriteEffects ^ (_matrixHandler == null ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+                    spriteEffects ^ (_matrixHandler == null ? SpriteEffects.None : _matrixHandler.SpriteEffect), 0);
 
 #if DEBUG
             d_sprite_draws++;
@@ -324,7 +324,7 @@ namespace AtlasEngine
             drawCalls++;
 
             _spriteBatch.DrawString(font, text, position, color,
-                angle, origin, scale, (_matrixHandler == null ? SpriteEffects.None : SpriteEffects.FlipVertically), 0);
+                angle, origin, scale, (_matrixHandler == null ? SpriteEffects.None : _matrixHandler.SpriteEffect), 0);
 
 #if DEBUG
             d_sprite_draws++;
@@ -375,8 +375,8 @@ namespace AtlasEngine
         {
             if (this.primitiveType != primitiveType)
             {
-                this.primitiveType = primitiveType;
                 DrawVectorBatch();
+                this.primitiveType = primitiveType;
             }
         }
 
@@ -461,10 +461,11 @@ namespace AtlasEngine
 
         public interface MatrixHandler
         {
-            Matrix GetSpriteBatchMatrix();
-            Matrix GetEffectMatrix();
-            Viewport GetViewPort();
-            RasterizerState GetSpriteBatchRasterState();
+            Matrix          GetSpriteBatchMatrix();
+            Matrix          GetEffectMatrix();
+            Viewport        ViewPort { get; }
+            RasterizerState RasterState { get; }
+            SpriteEffects   SpriteEffect{ get; }
         }
 
     }

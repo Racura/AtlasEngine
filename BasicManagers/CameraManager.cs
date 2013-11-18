@@ -17,9 +17,6 @@ namespace AtlasEngine.BasicManagers
         private Matrix _spriteMatrix;
         private Matrix _effectMatrix;
 
-        public Matrix GetSpriteBatchMatrix() { Configure(); return _spriteMatrix; }
-        public Matrix GetEffectMatrix() { Configure(); return _effectMatrix; }
-
 
         private float _raduis;
         public float Raduis
@@ -281,10 +278,7 @@ namespace AtlasEngine.BasicManagers
         }
 
 
-        public Viewport GetViewPort()
-        {
-            return _viewport;
-        }
+
 
         public void LookAt(int priority, Vector2? position, float? raduis, float speed, float raduisSpeed)
         {
@@ -378,9 +372,12 @@ namespace AtlasEngine.BasicManagers
 
 
 
-        public RasterizerState GetSpriteBatchRasterState()
-        {
-            return RasterizerState.CullClockwise;
-        }
+        public RasterizerState RasterState { get { return RasterizerState.CullClockwise; } }
+        public Viewport ViewPort { get { return _viewport; } }
+        public SpriteEffects SpriteEffect{ get { return SpriteEffects.FlipVertically; } }
+
+        public Matrix GetSpriteBatchMatrix() { Configure(); return _spriteMatrix; }
+        public Matrix GetEffectMatrix() { Configure(); return _effectMatrix; }
+
     }
 }

@@ -21,7 +21,7 @@ namespace AtlasEngine
         private MouseState mouse;
         private MouseState lastMouse;
 
-        private List<TouchPosition> touches;
+        private List<AtlasTouchPosition> touches;
 
         public AtlasInput()
             : base()
@@ -33,13 +33,13 @@ namespace AtlasEngine
             lastKeyboard = keyboard = new KeyboardState();
             mouse = lastMouse = new MouseState();
 
-            touches = new List<TouchPosition>();
+            touches = new List<AtlasTouchPosition>();
 
 #if MONOGAME
             TouchPanel.EnableMouseTouchPoint = true;
 #endif
 #if XNA
-            touches.Add(new TouchPosition(
+            touches.Add(new AtlasTouchPosition(
                     new TouchLocation(new Vector2(mouse.X, mouse.Y), TouchLocationState.Invalid)
             ));
 #endif
@@ -126,7 +126,7 @@ namespace AtlasEngine
             //touches = TouchPanel.GetState();
         }
 
-        public List<TouchPosition> GetTouchCollection() { return touches; }
+        public List<AtlasTouchPosition> GetTouchCollection() { return touches; }
 
         public KeyboardState GetKeyboard() { return keyboard; }
         public KeyboardState GetOldKeyboard() { return lastKeyboard; }
@@ -145,36 +145,37 @@ namespace AtlasEngine
         public bool IsKeyJustReleased(Keys key) { return !keyboard.IsKeyDown(key) && lastKeyboard.IsKeyDown(key); }
 
         
-        public class TouchPosition
+    }
+
+    public class AtlasTouchPosition
+    {
+        private TouchLocation _t;
+        private TouchLocation _last;
+
+        private object _owner;
+
+        public Vector2 Position { get { return _t.Position; } }
+        public Vector2 PreviousPosition { get { return _last.Position; } }
+        public TouchLocationState State { get { return _t.State; } }
+        public float Pressure { get { return _t.Pressure; } }
+        public int Id { get { return _t.Id; } }
+        public object Owner { get { return _owner; } }
+        public bool HasOwner { get { return _owner != null; } }
+
+        public AtlasTouchPosition(TouchLocation t)
         {
-            private TouchLocation _t;
-            private TouchLocation _last;
+            _last = _t = t;
+        }
 
-            private object _owner;
+        internal void Update(TouchLocation t)
+        {
+            _last = _t;
+            _t = t;
+        }
 
-            public Vector2 Position { get { return _t.Position; } }
-            public Vector2 PreviousPosition { get { return _last.Position; } }
-            public TouchLocationState State { get { return _t.State; } }
-            public float Pressure { get { return _t.Pressure; } }
-            public int Id { get { return _t.Id; } }
-            public object Owner { get { return _owner; } }
-            public bool HasOwner { get { return _owner != null; } }
-
-            public TouchPosition(TouchLocation t)
-            {
-                _last = _t = t;
-            }
-
-            internal void Update(TouchLocation t)
-            {
-                _last = _t;
-                _t = t;
-            }
-
-            public void SetOwner(object owner)
-            {
-                this._owner = owner;
-            }
+        public void SetOwner(object owner)
+        {
+            this._owner = owner;
         }
     }
 
