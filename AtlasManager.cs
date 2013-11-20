@@ -12,17 +12,10 @@ namespace AtlasEngine
         {
         }
 
-        public virtual void Update(string arg)
-        {
-        }
+        public abstract void Update(string arg);
 
-        public virtual void Draw(int pass)
-        {
+        public abstract void Draw(int pass);
 
-        }
-
-        public virtual void Restart(bool force)
-        {
-        }
+        public abstract void Restart(bool force);
     }
 }

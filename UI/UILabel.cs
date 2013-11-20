@@ -94,16 +94,14 @@ namespace AtlasEngine.UI
                 _subPosition[i] = new Vector2((Bounds.Width - rect.X) * divider, height);
 
                 height += rect.Y;
-                if (height > Bounds.Height)
+                if (height > Bounds.Height && i > 0)
                 {
                     height -= rect.Y;
                     break;
                 }
 
                 _count = i + 1;
-            }
-
-            _count = Math.Max(_count, 1);
+            } 
 
             for (int i = 0; i < _count; ++i)
             {

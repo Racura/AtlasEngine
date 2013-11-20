@@ -30,7 +30,6 @@ namespace AtlasEngine.UI
 
         public override void Restart(bool force)
         {
-            base.Restart(force);
         }
 
         public override void Update(string arg)
@@ -55,8 +54,6 @@ namespace AtlasEngine.UI
             }
 
             View.Update();
-
-            base.Update(arg);
         }
 
         public override void Draw(int arg)
@@ -65,8 +62,6 @@ namespace AtlasEngine.UI
 
             View.Frame = new RectangleF(0, 0, Atlas.Graphics.ResolutionWidth, Atlas.Graphics.ResolutionHeight);
             View.Draw(View.Frame);
-
-            base.Draw(arg);
         }
 
         public Matrix GetSpriteBatchMatrix()

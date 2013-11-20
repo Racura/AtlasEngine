@@ -64,8 +64,6 @@ namespace AtlasEngine.BasicManagers
             if (force)
                 foreach (Emitter e in emitters.Values)
                     e.Kill();
-
-            base.Restart(force);
         }
     }
 }

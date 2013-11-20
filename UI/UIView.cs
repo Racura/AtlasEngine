@@ -25,10 +25,7 @@ namespace AtlasEngine.UI
                     return;
 
                 _frame = value;
-
                 LayoutSubviews();
-                Bounds = new Rectangle(0, 0, (int)_frame.Width, (int)_frame.Height);
-                Position = new Vector2(_frame.X, _frame.Y);
             }
             get { return _frame; }
         }
@@ -119,67 +116,70 @@ namespace AtlasEngine.UI
 
         public virtual void LayoutSubviews()
         {
-            if (SubViews == null)
-                return;
-
-            foreach (var v in SubViews)
+            if (SubViews != null)
             {
-                if (v.AutoResizeMask == UIAutoResizingMask.None)
-                    continue;
 
-                RectangleF rect = v.Frame;
-
-                if ((v.AutoResizeMask & (UIAutoResizingMask.FlexibleWidth | UIAutoResizingMask.FlexibleLeftMargin))
-                    != UIAutoResizingMask.None)
+                foreach (var v in SubViews)
                 {
-                    var values = new float[]
+                    if (v.AutoResizeMask == UIAutoResizingMask.None)
+                        continue;
+
+                    RectangleF rect = v.Frame;
+
+                    if ((v.AutoResizeMask & (UIAutoResizingMask.FlexibleWidth | UIAutoResizingMask.FlexibleLeftMargin))
+                        != UIAutoResizingMask.None)
                     {
-                        (rect.X),
-                        (rect.Width),
-                        (_lastFrame.Width - rect.X - rect.Width),
-                    };
+                        var values = new float[]
+                        {
+                            (rect.X),
+                            (rect.Width),
+                            (_lastFrame.Width - rect.X - rect.Width),
+                        };
 
-                    var flexible = new bool[]{
-                        ((v.AutoResizeMask & UIAutoResizingMask.FlexibleLeftMargin)    != UIAutoResizingMask.None && values[0] != 0),
-                        ((v.AutoResizeMask & UIAutoResizingMask.FlexibleWidth)         != UIAutoResizingMask.None && values[1] != 0),
-                        ((v.AutoResizeMask & UIAutoResizingMask.FlexibleRightMargin)   != UIAutoResizingMask.None && values[2] != 0),
-                    };
+                        var flexible = new bool[]{
+                            ((v.AutoResizeMask & UIAutoResizingMask.FlexibleLeftMargin)    != UIAutoResizingMask.None && values[0] != 0),
+                            ((v.AutoResizeMask & UIAutoResizingMask.FlexibleWidth)         != UIAutoResizingMask.None && values[1] != 0),
+                            ((v.AutoResizeMask & UIAutoResizingMask.FlexibleRightMargin)   != UIAutoResizingMask.None && values[2] != 0),
+                        };
 
-                    float totalFlex = (flexible[0] ? values[0] : 0) + (flexible[1] ? values[1] : 0) + (flexible[2] ? values[2] : 0);
+                        float totalFlex = (flexible[0] ? values[0] : 0) + (flexible[1] ? values[1] : 0) + (flexible[2] ? values[2] : 0);
 
-                    if (flexible[0])
-                        rect.X = values[0] + values[0] / totalFlex * (_frame.Width - _lastFrame.Width);
+                        if (flexible[0])
+                            rect.X = values[0] + values[0] / totalFlex * (_frame.Width - _lastFrame.Width);
 
-                    if (flexible[1])
-                        rect.Width = values[1] + values[1] / totalFlex * (_frame.Width - _lastFrame.Width);
-                } 
-                if ((v.AutoResizeMask & (UIAutoResizingMask.FlexibleHeight | UIAutoResizingMask.FlexibleTopMargin))
-                     != UIAutoResizingMask.None)
-                {
-                    var values = new float[]
+                        if (flexible[1])
+                            rect.Width = values[1] + values[1] / totalFlex * (_frame.Width - _lastFrame.Width);
+                    }
+                    if ((v.AutoResizeMask & (UIAutoResizingMask.FlexibleHeight | UIAutoResizingMask.FlexibleTopMargin))
+                         != UIAutoResizingMask.None)
                     {
-                        (rect.Y),
-                        (rect.Height),
-                        (_lastFrame.Height - rect.Y - rect.Height),
-                    };
+                        var values = new float[]
+                        {
+                            (rect.Y),
+                            (rect.Height),
+                            (_lastFrame.Height - rect.Y - rect.Height),
+                        };
 
-                    var flexible = new bool[]{
-                        ((v.AutoResizeMask & UIAutoResizingMask.FlexibleTopMargin)      != UIAutoResizingMask.None && values[0] != 0),
-                        ((v.AutoResizeMask & UIAutoResizingMask.FlexibleHeight)         != UIAutoResizingMask.None && values[1] != 0),
-                        ((v.AutoResizeMask & UIAutoResizingMask.FlexibleBottomMargin)   != UIAutoResizingMask.None && values[2] != 0),
-                    };
+                        var flexible = new bool[]{
+                            ((v.AutoResizeMask & UIAutoResizingMask.FlexibleTopMargin)      != UIAutoResizingMask.None && values[0] != 0),
+                            ((v.AutoResizeMask & UIAutoResizingMask.FlexibleHeight)         != UIAutoResizingMask.None && values[1] != 0),
+                            ((v.AutoResizeMask & UIAutoResizingMask.FlexibleBottomMargin)   != UIAutoResizingMask.None && values[2] != 0),
+                        };
 
-                    float totalFlex = (flexible[0] ? values[0] : 0) + (flexible[1] ? values[1] : 0) + (flexible[2] ? values[2] : 0);
+                        float totalFlex = (flexible[0] ? values[0] : 0) + (flexible[1] ? values[1] : 0) + (flexible[2] ? values[2] : 0);
 
-                    if (flexible[0])
-                        rect.Y = values[0] + values[0] / totalFlex * (_frame.Height - _lastFrame.Height);
+                        if (flexible[0])
+                            rect.Y = values[0] + values[0] / totalFlex * (_frame.Height - _lastFrame.Height);
 
-                    if (flexible[1])
-                        rect.Height = values[1] + values[1] / totalFlex * (_frame.Height - _lastFrame.Height);
+                        if (flexible[1])
+                            rect.Height = values[1] + values[1] / totalFlex * (_frame.Height - _lastFrame.Height);
+                    }
+                    v.Frame = rect;
                 }
-
-                v.Frame = rect;
             }
+
+            Bounds = new Rectangle(0, 0, (int)_frame.Width, (int)_frame.Height);
+            Position = new Vector2(_frame.X, _frame.Y);
         }
 
 

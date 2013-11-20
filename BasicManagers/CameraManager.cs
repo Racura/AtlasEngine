@@ -198,7 +198,7 @@ namespace AtlasEngine.BasicManagers
             }
             _viewport = Atlas.Graphics.ViewPort;
 
-            base.Restart(force);
+          
         }
 
         public Vector2 CheckBounds(Vector2 point)
@@ -379,5 +379,7 @@ namespace AtlasEngine.BasicManagers
         public Matrix GetSpriteBatchMatrix() { Configure(); return _spriteMatrix; }
         public Matrix GetEffectMatrix() { Configure(); return _effectMatrix; }
 
+
+        public float PixelToPointRation { get { return Height / Atlas.Graphics.ResolutionHeight; } }
     }
 }
