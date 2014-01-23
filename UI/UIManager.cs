@@ -10,8 +10,7 @@ using AtlasEngine;
 
 namespace AtlasEngine.UI
 {
-    
-    public abstract class UIManager : AtlasManager, AtlasEngine.AtlasGraphics.MatrixHandler
+    public abstract class UIManager : AtlasEntity, IAtlasManager, AtlasEngine.AtlasGraphics.MatrixHandler
     {
         public UIView View { get; private set; }
 
@@ -28,17 +27,21 @@ namespace AtlasEngine.UI
             };
         }
 
-        public override void Restart(bool force)
+        public virtual void Initialize()
         {
         }
 
-        public override void Update(string arg)
+        public virtual void Restart(bool force)
+        {
+        }
+
+        public virtual void Update(string arg)
         {
             View.Frame = new RectangleF(0, 0, Atlas.Graphics.ResolutionWidth, Atlas.Graphics.ResolutionHeight);
 
             foreach (var t in Atlas.Input.GetTouchCollection())
             {
-                if (t.State == TouchLocationState.Pressed)
+                if (t.State == AtlasTouchState.Pressed)
                 {
                     var v = View.PointForView(t.Position);
 
@@ -46,7 +49,9 @@ namespace AtlasEngine.UI
                         t.SetOwner(v);
                         v.TouchUpdate(t);
                     }
-                } else if(t.State != TouchLocationState.Invalid && t.Owner is UIView){
+                }
+                else if (t.State != AtlasTouchState.Invalid && t.Owner is UIView)
+                {
                     var view = t.Owner as UIView;
 
                     view.TouchUpdate(t);
@@ -56,7 +61,7 @@ namespace AtlasEngine.UI
             View.Update();
         }
 
-        public override void Draw(int arg)
+        public virtual void Draw(int arg)
         {
             Atlas.Graphics.SetMatrixHandler(this);
 

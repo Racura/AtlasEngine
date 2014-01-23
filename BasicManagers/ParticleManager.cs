@@ -12,7 +12,7 @@ using AtlasEngine.BasicManagers.Particle;
 
 namespace AtlasEngine.BasicManagers
 {
-    public class ParticleManager : AtlasManager
+    public class ParticleManager : AtlasEntity, IAtlasManager
     {
         public Dictionary<string, Emitter> emitters;
 
@@ -22,13 +22,18 @@ namespace AtlasEngine.BasicManagers
             emitters = new Dictionary<string, Emitter>();
         }
 
-        public override void Update(string arg)
+        public virtual void Initialize()
+        {
+
+        }
+
+        public virtual void Update(string arg)
         {
             foreach(Emitter e in emitters.Values)
                 e.Update();
         }
 
-        public override void Draw(int pass)
+        public virtual void Draw(int pass)
         {
             foreach (Emitter e in emitters.Values)
                 e.Draw(pass);
@@ -59,7 +64,7 @@ namespace AtlasEngine.BasicManagers
             emitters[name].Emit(position, count);
         }
 
-        public override void Restart(bool force)
+        public virtual void Restart(bool force)
         {
             if (force)
                 foreach (Emitter e in emitters.Values)

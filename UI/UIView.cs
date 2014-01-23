@@ -29,8 +29,17 @@ namespace AtlasEngine.UI
             }
             get { return _frame; }
         }
-        public Rectangle Bounds { set; get; }
-        public Vector2 Position { set; get; }
+        public Rectangle Bounds { set; protected get; }
+        public Vector2 Position { set; protected get; }
+        public Vector2 AbsolutePosition
+        {
+            get
+            {
+                if (SuperViews == null)
+                    return Position;
+                return Position + SuperViews.Position;
+            }
+        }
 
         public bool Hidden          { set; get; }
         public bool TouchResponder  { set; get; }

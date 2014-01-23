@@ -42,6 +42,11 @@ namespace AtlasEngine
             this.Height = height;
         }
 
+        public override string ToString()
+        {
+            return string.Format("{{X:{0} Y:{1} Width:{2} Height:{3}}}", X, Y, Width, Height);
+        }
+
         public bool Overlap(RectangleF other)
         {
             return Overlap(this, other);
@@ -79,6 +84,24 @@ namespace AtlasEngine
                 || (v.X > rect1.X + rect1.Width)
                 || (rect1.Y > v.Y)
                 || (v.Y > rect1.Y + rect1.Height));
+        }
+
+        public bool Overlap(CircleF circle)
+        {
+            return Overlap(this, circle.Point, circle.Radius);
+        }
+
+        public bool Overlap(Vector2 p, float raduis)
+        {
+            return Overlap(this, p, raduis);
+        }
+
+        public static bool Overlap(RectangleF rect1, Vector2 p, float raduis)
+        {
+            float x = MathHelper.Clamp(p.X, rect1.X, rect1.X + rect1.Width);
+            float y = MathHelper.Clamp(p.Y, rect1.Y, rect1.Y + rect1.Height);
+
+            return ((x - p.X) * (x - p.X)) + ((y - p.Y) * (y - p.Y)) < raduis * raduis;
         }
 
         public bool Equals(RectangleF other)

@@ -21,7 +21,7 @@ namespace AtlasEngine
         private MouseState mouse;
         private MouseState lastMouse;
 
-        private List<AtlasTouchPosition> touches;
+        private List<AtlasTouchPosition> _touches;
 
         public AtlasInput()
             : base()
@@ -33,13 +33,13 @@ namespace AtlasEngine
             lastKeyboard = keyboard = new KeyboardState();
             mouse = lastMouse = new MouseState();
 
-            touches = new List<AtlasTouchPosition>();
+            _touches = new List<AtlasTouchPosition>();
 
 #if MONOGAME
             TouchPanel.EnableMouseTouchPoint = true;
 #endif
 #if XNA
-            touches.Add(new AtlasTouchPosition(
+            _touches.Add(new AtlasTouchPosition(
                     new TouchLocation(new Vector2(mouse.X, mouse.Y), TouchLocationState.Invalid)
             ));
 #endif
@@ -75,21 +75,38 @@ namespace AtlasEngine
             {
                 if (t.State != TouchLocationState.Pressed)
                 {
-                    for (int i = 0; i < touches.Count; i++)
+                    for (int i = 0; i < _touches.Count; i++)
                     {
-                        if (touches[i].Id == t.Id)
+                        if (_touches[i].Id == t.Id)
                         {
-                            touches[i].Update(t);
+                            _touches[i].Update(t);
                         }
                     }
                 }
                 else
-                    touches.Add(new TouchPosition(t));
+                    _touches.Add(new AtlasTouchPosition(t));
+            }
+
+            foreach (var t in _touches)
+            {
+                bool valid = false;
+
+                for (int j = 0; j < touch.Count; j++)
+                {
+                    if (touch[j].Id == t.Id)
+                    {
+                        valid = true;
+                        break;
+                    }
+                }
+
+                if (!valid)
+                    t.Update(new TouchLocation());
             }
 #endif
 #if XNA
 
-            foreach(var t in touches){
+            foreach(var t in _touches){
 
                 if (t.Id == -1)
                 {
@@ -126,7 +143,7 @@ namespace AtlasEngine
             //touches = TouchPanel.GetState();
         }
 
-        public List<AtlasTouchPosition> GetTouchCollection() { return touches; }
+        public List<AtlasTouchPosition> GetTouchCollection() { return _touches; }
 
         public KeyboardState GetKeyboard() { return keyboard; }
         public KeyboardState GetOldKeyboard() { return lastKeyboard; }
@@ -156,7 +173,7 @@ namespace AtlasEngine
 
         public Vector2 Position { get { return _t.Position; } }
         public Vector2 PreviousPosition { get { return _last.Position; } }
-        public TouchLocationState State { get { return _t.State; } }
+        public AtlasTouchState State { get { return (AtlasTouchState)_t.State; } }
         public float Pressure { get { return _t.Pressure; } }
         public int Id { get { return _t.Id; } }
         public object Owner { get { return _owner; } }
@@ -188,7 +205,6 @@ namespace AtlasEngine
         public int Id;
 
 
-
         public TouchLocation(Vector2 position, TouchLocationState state)
         {
             this.Position = position;
@@ -206,4 +222,12 @@ namespace AtlasEngine
         Moved
     }
 #endif
+
+    public enum AtlasTouchState
+    {
+        Invalid = TouchLocationState.Invalid,
+        Released = TouchLocationState.Released,
+        Pressed = TouchLocationState.Pressed,
+        Moved = TouchLocationState.Moved
+    }
 }

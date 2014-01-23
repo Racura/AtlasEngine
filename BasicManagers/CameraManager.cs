@@ -10,10 +10,8 @@ using AtlasEngine;
 
 namespace AtlasEngine.BasicManagers
 {
-    public class CameraManager : AtlasManager, AtlasEngine.AtlasGraphics.MatrixHandler
+    public class CameraManager : AtlasEntity,  IAtlasManager, AtlasGraphics.MatrixHandler
     {
-        private int _priority;
-
         private Matrix _spriteMatrix;
         private Matrix _effectMatrix;
 
@@ -23,29 +21,6 @@ namespace AtlasEngine.BasicManagers
         {
             get { return _raduis; }
             set { _raduis = value; _dirty = true; }
-        }
-        private float _wantedRaduis;
-        public float WantedRaduis
-        {
-            get { return _wantedRaduis; }
-            set { _wantedRaduis = value; }
-        }
-
-        public float WantedWidth
-        {
-            get { return Math.Max(_wantedRaduis * Atlas.Graphics.ResolutionRatio, _wantedRaduis) * 2; }
-            set
-            {
-                _wantedRaduis = Math.Min(value * 0.5f / Atlas.Graphics.ResolutionRatio, value * 0.5f);
-            }
-        }
-        public float WantedHeight
-        {
-            get { return Math.Max(_wantedRaduis / Atlas.Graphics.ResolutionRatio, _wantedRaduis) * 2; }
-            set
-            {
-                _wantedRaduis = Math.Min(value * 0.5f * Atlas.Graphics.ResolutionRatio, value * 0.5f);
-            }
         }
 
         public float Width
@@ -93,43 +68,7 @@ namespace AtlasEngine.BasicManagers
             set { _position.Y = value; _dirty = true; }
         }
 
-        private Vector2 _wantedPosition;
-        public Vector2 WantedPosition
-        {
-            get { return _wantedPosition; }
-            set { _wantedPosition = value; }
-        }
-
-
-        private RectangleF _boundingBox;
-        public RectangleF BoundingBox
-        {
-            get { return _boundingBox; }
-            set { _boundingBox = value; }
-        }
-
-
-        private float _cameraSpeed;
-        private float _raduisSpeed;
-        public float CameraSpeed
-        {
-            get { return _cameraSpeed; }
-            set { _cameraSpeed = value; }
-        }
-        public float RaduisSpeed
-        {
-            get { return _raduisSpeed; }
-            set { _raduisSpeed = value; }
-        }
-
         private bool _dirty;
-
-        private Vector2 _lastPosition;
-        private float _lastRaduis;
-
-        public Vector2 initPosition;
-        public float initRaduis;
-        public RectangleF initBoundingBox;
 
         private float _angle;
         public float Angle
@@ -162,12 +101,10 @@ namespace AtlasEngine.BasicManagers
             }
         }
 
-        public CameraManager(AtlasGlobal atlas, Vector2 initPosition, float initRaduis, RectangleF initBoundingBox)
+        public CameraManager(AtlasGlobal atlas, float raduis)
             : base(atlas)
         {
-            this.initRaduis = initRaduis;
-            this.initPosition = initPosition;
-            this.initBoundingBox = initBoundingBox;
+            this._raduis = raduis;
 
             Atlas.Graphics.onResolutionChange += () =>
             {
@@ -178,84 +115,27 @@ namespace AtlasEngine.BasicManagers
             Restart(true);
         }
 
-        public override void Restart(bool force)
+
+
+        public virtual void Initialize()
         {
-            _priority = -1;
-            _boundingBox = initBoundingBox;
 
-            _cameraSpeed = 1;
-            _raduisSpeed = 1;
+        }
 
+        public virtual void Restart(bool force)
+        {
             _dirty = _upDirty = true;
-            _wantedRaduis = initRaduis;
-            _wantedPosition = initPosition;
             _scrollFactor = Vector2.One;
 
-            if (force)
-            {
-                _raduis = _wantedRaduis;
-                _position = _wantedPosition;
-            }
+            _position = Vector2.Zero;
             _viewport = Atlas.Graphics.ViewPort;
 
           
         }
 
-        public Vector2 CheckBounds(Vector2 point)
+
+        public virtual void Update(string arg)
         {
-            if (point.X + Width / 2 > _boundingBox.X + _boundingBox.Width)
-                point.X = _boundingBox.X + _boundingBox.Width - Width / 2;
-            if (point.X - Width / 2 < _boundingBox.X)
-                point.X = _boundingBox.X + Width / 2;
-
-            if (point.Y + Height / 2 > _boundingBox.Y + _boundingBox.Height)
-                point.Y = _boundingBox.Y + _boundingBox.Height - Height / 2;
-            if (point.Y - Height / 2 < _boundingBox.Y)
-                point.Y = _boundingBox.Y + Height / 2;
-
-            return point;
-        }
-
-
-        public override void Update(string arg)
-        {
-            _priority = -1;
-
-            if (WantedWidth > _boundingBox.Width)       WantedWidth = _boundingBox.Width;
-            if (WantedHeight > _boundingBox.Height)     WantedHeight = _boundingBox.Height;
-
-            float tmp = 1 + Math.Max(_raduis - _wantedRaduis, 0) / _raduis * _raduisSpeed;
-
-            if (Math.Abs(_wantedRaduis - _raduis) * Atlas.Elapsed * _raduisSpeed > 0.025f)
-                _raduis += (_wantedRaduis - _raduis) * Atlas.Elapsed * _raduisSpeed;
-            else
-                _raduis = _wantedRaduis;
-
-            if (Width > _boundingBox.Width)             Width = _boundingBox.Width;
-            if (Height > _boundingBox.Height)           Height = _boundingBox.Height;
-
-            _wantedPosition = CheckBounds(_wantedPosition);
-
-            if (Math.Abs(_wantedPosition.X - _position.X) * _cameraSpeed * tmp > 0.025f)
-                _position.X += (_wantedPosition.X - _position.X) * Atlas.Elapsed * _cameraSpeed * tmp;
-            else
-                _position.X = _wantedPosition.X;
-
-            if (Math.Abs(_wantedPosition.Y - _position.Y) * _cameraSpeed * tmp > 0.025f)
-                _position.Y += (_wantedPosition.Y - _position.Y) * Atlas.Elapsed * _cameraSpeed * tmp;
-            else
-                _position.Y = _wantedPosition.Y;
-
-            _position = CheckBounds(_position);
-
-            if (!_dirty && (_position.X != _lastPosition.X ||
-                            _position.Y != _lastPosition.Y ||
-                            _raduis != _lastRaduis))
-            {
-                _dirty = true;
-            }
-            _lastPosition = _position;
-            _lastRaduis = _raduis;
         }
 
         public Vector2 GetWorldPosition(Vector2 point, Vector2 scrollFactor)
@@ -270,34 +150,11 @@ namespace AtlasEngine.BasicManagers
             return v;
         }
 
-        public override void Draw(int pass)
+        public virtual void Draw(int pass)
         {
             Configure();
             Atlas.Graphics.SetMatrixHandler(this);
 
-        }
-
-
-
-
-        public void LookAt(int priority, Vector2? position, float? raduis, float speed, float raduisSpeed)
-        {
-            if (this._priority <= priority)
-            {
-                this._priority = priority;
-
-                if (position != null)
-                {
-                    this._wantedPosition = (Vector2)position;
-                    this._cameraSpeed = speed;
-                }
-
-                if (raduis != null)
-                {
-                    this.WantedRaduis = (float)raduis;
-                    this._raduisSpeed = raduisSpeed;
-                }
-            }
         }
 
         public void Configure()
@@ -343,10 +200,10 @@ namespace AtlasEngine.BasicManagers
             float tmp = Math.Max(Width, Height) * 10;
 
 
-            vertex[0].Position = 1.0f * new Vector3(_position.X + tmp, _position.Y + tmp, 0);
-            vertex[1].Position = 1.0f * new Vector3(_position.X - tmp, _position.Y + tmp, 0);
-            vertex[2].Position = 1.0f * new Vector3(_position.X + tmp, _position.Y - tmp, 0);
-            vertex[3].Position = 1.0f * new Vector3(_position.X - tmp, _position.Y - tmp, 0);
+            vertex[0].Position = new Vector3(_position.X + tmp, _position.Y + tmp, 0);
+            vertex[1].Position = new Vector3(_position.X - tmp, _position.Y + tmp, 0);
+            vertex[2].Position = new Vector3(_position.X + tmp, _position.Y - tmp, 0);
+            vertex[3].Position = new Vector3(_position.X - tmp, _position.Y - tmp, 0);
 
             if (texture != null)
             {
@@ -358,8 +215,8 @@ namespace AtlasEngine.BasicManagers
                     }
                     else
                     {
-                        vertex[i].TextureCoordinate.X = (vertex[i].Position.X + offset.X) / texture.Width / scale;
-                        vertex[i].TextureCoordinate.Y = (vertex[i].Position.Y + offset.Y) / texture.Height / scale;
+                        vertex[i].TextureCoordinate.X = (vertex[i].Position.X + offset.X) / (texture.Width * scale);
+                        vertex[i].TextureCoordinate.Y = (vertex[i].Position.Y + offset.Y) / (texture.Height * scale);
                     }
                 }
             }

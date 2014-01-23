@@ -15,11 +15,11 @@ namespace AtlasEngine.Infrastructure
         public int drawWeight;
         public int updateWeight;
 
-        public AtlasManager manager;
+        public IAtlasManager manager;
 
         public int pass;
 
-        public AtlasManagerSorter(AtlasManager manager, string arg, int updateWeight, int drawWeight)
+        public AtlasManagerSorter(IAtlasManager manager, string arg, int updateWeight, int drawWeight)
         {
             this.manager = manager;
             this.arg = arg;

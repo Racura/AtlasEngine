@@ -21,8 +21,8 @@ namespace AtlasEngine.Infrastructure
     /// </summary>
     public class AtlasComponent : Microsoft.Xna.Framework.DrawableGameComponent
     {
-        private Dictionary<string, AtlasManager> managers;
-        public Dictionary<string, AtlasManager> Manager { get { return managers; } }
+        private Dictionary<string, IAtlasManager> managers;
+        public Dictionary<string, IAtlasManager> Manager { get { return managers; } }
 
         private List<AtlasManagerSorter> managerDrawSorter;
         private List<AtlasManagerSorter> managerUpdateSorter;
@@ -34,17 +34,21 @@ namespace AtlasEngine.Infrastructure
         private IAtlasGamePage gamePage;
         private bool drawThisFrame;
 
+        private bool firstFrame;
+
         public AtlasComponent(IAtlasGamePage gamePage, GraphicsDeviceManager graphicsDeviceManager)
             : base(gamePage.Game)
         {
             this.gamePage = gamePage;
 
-            managers = new Dictionary<string, AtlasManager>();
+            managers = new Dictionary<string, IAtlasManager>();
             managerDrawSorter = new List<AtlasManagerSorter>();
             managerUpdateSorter = new List<AtlasManagerSorter>();
             dirty = true;
 
             atlas = new AtlasGlobal(this, graphicsDeviceManager);
+
+            firstFrame = true;
         }
 
         public void AddManager(AtlasManagerSorter sorter)
@@ -85,24 +89,33 @@ namespace AtlasEngine.Infrastructure
         }
         public virtual void Restart(bool force)
         {
-            foreach (AtlasManager m in Manager.Values)
+            foreach (IAtlasManager m in Manager.Values)
                 m.Restart(force);
         }
 
         public sealed override void Update(GameTime gameTime){
-
             drawThisFrame = gamePage.Active && Atlas.Content.QueueCount() == 0;
-
             Atlas.Content.LoadQueue();
 
             if (!drawThisFrame)
                 return;
 
+
             atlas.Update(gameTime);
 
-            PreUpdate();
-
             Sort();
+
+            if (firstFrame)
+            {
+                firstFrame = false;
+
+                foreach (AtlasManagerSorter ms in managerUpdateSorter)
+                    ms.manager.Initialize();
+            }
+            
+
+            PreUpdate();
+            
             foreach (AtlasManagerSorter ms in managerUpdateSorter)
                 ms.manager.Update(ms.arg);
 
@@ -118,6 +131,8 @@ namespace AtlasEngine.Infrastructure
 
         public sealed override void Draw(GameTime gameTime){
 
+            base.Draw(gameTime);
+
             if (!drawThisFrame)
                 return;
 
@@ -132,13 +147,9 @@ namespace AtlasEngine.Infrastructure
                 ms.manager.Draw(ms.pass);
             }
                 
-
-            atlas.Graphics.Flush();
             PostDraw();
             atlas.Graphics.Flush();
 
-
-            base.Draw(gameTime);
         }
 
         public virtual void Resume()

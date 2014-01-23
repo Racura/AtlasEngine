@@ -18,20 +18,12 @@ namespace AtlasEngine
     public class AtlasGlobal
     {
         private AtlasTimer _timer;
-
-        private object _stateControl;
-
-        public void SetStateController(object stateControl)
-        {
-            if (_stateControl == null)
-                _stateControl = stateControl;
-        }
-
-        public T GetStateController<T>() where T : class { return _stateControl as T; }
         
-        public T GetManager<T>() where T : AtlasManager { return managerComponent.Manager[typeof(T).AssemblyQualifiedName] as T; }
-        public float Elapsed { get { return _timer.GetElapsedUpdate(); } }
-        public float TotalTime { get { return _timer.GetTotalUpdate(); } }
+        public T GetManager<T>() where T : IAtlasManager { return (T)managerComponent.Manager[typeof(T).AssemblyQualifiedName]; }
+        public float Elapsed { get { return _timer.ElapsedUpdate; } }
+        public float TrueElapsed { get { return _timer.TrueElapsedUpdate; } }
+        public float TimerScale { get { return _timer.UpdateScale; } set { _timer.UpdateScale = value; } }
+        public float TotalTime { get { return _timer.TotalUpdate; } }
 
         private Game game;
         public Game Game { get { return game; } }

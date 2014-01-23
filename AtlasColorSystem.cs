@@ -15,7 +15,7 @@ namespace AtlasEngine
             if (saturation <= 0)
                 return new Color(light, light, light);
 
-            hue = ((hue + (hue < 0 ? 6 : 0)) % 360) / 60;
+            hue = (hue % 360) / 60;
 
             if (hue < 0)
                 hue = hue + 6;
@@ -24,21 +24,23 @@ namespace AtlasEngine
             float x = c * (1 - Math.Abs(hue % 2 - 1));
             float m = light - c * 0.5f;
 
+            const int MOD = 255;
+
             switch ((int)hue)
             {
                 case 0:
-                    return new Color(m + c, m + x, m);
+                    return new Color(Convert.ToByte((m + c) * MOD), Convert.ToByte((m + x) * MOD), Convert.ToByte((m) * MOD));
                 case 1:
-                    return new Color(m + x, m + c, m);
+                    return new Color(Convert.ToByte((m + x) * MOD), Convert.ToByte((m + c) * MOD), Convert.ToByte((m) * MOD));
                 case 2:
-                    return new Color(m, m + c, m + x);
+                    return new Color(Convert.ToByte((m) * MOD), Convert.ToByte((m + c) * MOD), Convert.ToByte((m + x) * MOD));
                 case 3:
-                    return new Color(m, m + x, m + c);
+                    return new Color(Convert.ToByte((m) * MOD), Convert.ToByte((m + x) * MOD), Convert.ToByte((m + c) * MOD));
                 case 4:
-                    return new Color(m + x, m, m + c);
+                    return new Color(Convert.ToByte((m + x) * MOD), Convert.ToByte((m) * MOD), Convert.ToByte((m + c) * MOD));
                 case 5:
                 default:
-                    return new Color(m + c, m, m + x);
+                    return new Color(Convert.ToByte((m + c) * MOD), Convert.ToByte((m) * MOD), Convert.ToByte((m + x) * MOD));
             }
         }
     }

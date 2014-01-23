@@ -217,7 +217,6 @@ namespace AtlasEngine
                 return;
             }
             Flush();
-            _currentMode = AtlasGraphicsMode.Sprite;
             _lastBlendState = blendState;
             _lastSamplerState = samplerState;
 
@@ -241,6 +240,7 @@ namespace AtlasEngine
                                 _matrixHandler.RasterState,
                                 null, _matrixHandler.GetSpriteBatchMatrix());
             }
+            _currentMode = AtlasGraphicsMode.Sprite;
 #if DEBUG
             d_spritebatch_begins++;
 #endif
@@ -345,7 +345,6 @@ namespace AtlasEngine
             _lastSamplerState = samplerState;
 
             Flush();
-            _currentMode = AtlasGraphicsMode.Vector;
 
             if (_matrixHandler != null) 
                 _basicEffect.Projection = _matrixHandler.GetEffectMatrix();
@@ -353,6 +352,7 @@ namespace AtlasEngine
                 _basicEffect.Projection =
                     Matrix.CreateOrthographicOffCenter(0, ResolutionWidth, ResolutionHeight, 0, -100, 100);
 
+            _currentMode = AtlasGraphicsMode.Vector;
             //_basicEffect.World = Matrix.CreateTranslation(10, 10, 0);
 
             _basicEffect.TextureEnabled = true;

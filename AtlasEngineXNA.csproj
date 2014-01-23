@@ -65,7 +65,7 @@
     <Compile Include="AtlasGlobal.cs" />
     <Compile Include="AtlasGraphics.cs" />
     <Compile Include="AtlasInput.cs" />
-    <Compile Include="AtlasManager.cs" />
+    <Compile Include="IAtlasManager.cs" />
     <Compile Include="AtlasMath.cs" />
     <Compile Include="AtlasTimer.cs" />
     <Compile Include="BasicManagers\CameraManager.cs" />
@@ -75,6 +75,8 @@
     <Compile Include="BasicManagers\Particle\ParticleDelegate.cs" />
     <Compile Include="BasicManagers\Particle\ParticleDelegates\SmokeParticleDelegate.cs" />
     <Compile Include="BasicManagers\Particle\ParticleDelegates\TrailParticleDelegate.cs" />
+    <Compile Include="Struct\CircleF.cs" />
+    <Compile Include="Struct\LineF.cs" />
     <Compile Include="UI\UILabel.cs" />
     <Compile Include="UI\UIManager.cs" />
     <Compile Include="UI\UIView.cs" />
